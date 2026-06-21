@@ -3,3 +3,21 @@
 [build]
   publish = "site"
   command = ""
+
+# Security headers applied to every response.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Restrict what the page is allowed to load (defence-in-depth against XSS / injection).
+    # Matches exactly what the site uses: own files, the inline intro script, GSAP (cdnjs), and Google Fonts.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+    # Stop the site being embedded in an iframe elsewhere (clickjacking).
+    X-Frame-Options = "DENY"
+    # Stop browsers guessing/overriding declared content types.
+    X-Content-Type-Options = "nosniff"
+    # Don't leak the full URL to other sites in the Referer header.
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Switch off browser features the site doesn't use.
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+    # Once HTTPS is on, force browsers to always use it for this domain.
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
