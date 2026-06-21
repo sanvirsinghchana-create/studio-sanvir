@@ -1,0 +1,184 @@
+/* =========================================================================
+   SANVIR CHANA — FILM PAGE
+   A single film: cinematic hero → editorial body → next film.
+   Shares the homepage palette + type; reuses home.js for the primitives.
+   ========================================================================= */
+:root {
+  --paper:#efe9de; --paper-2:#e5ddcd;
+  --ink:#1a1712; --ink-2:rgba(26,23,18,0.58); --ink-3:rgba(26,23,18,0.40);
+  --line:rgba(26,23,18,0.16); --line-2:rgba(26,23,18,0.09);
+  --oxblood:#471a24; --wine:#8a2e3c;
+  --cream:#f2ebe1; --cream-2:rgba(242,235,225,0.62); --cream-3:rgba(242,235,225,0.40); --cream-line:rgba(242,235,225,0.20);
+  --serif:"Playfair Display",Georgia,"Times New Roman",serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --ease:cubic-bezier(0.22,1,0.36,1); --spring:cubic-bezier(0.34,1.4,0.64,1);
+  --img:contrast(1.03) saturate(1.05);
+}
+
+/* per-film display face — themed to each film's place */
+body.f--italian { --serif: "Bodoni Moda", "Bodoni 72", Didot, "Times New Roman", serif; }
+body.f--french  { --serif: "Cormorant Garamond", Garamond, Georgia, serif; }
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body { background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow-x:hidden; }
+@media (hover:hover) and (pointer:fine) { body { cursor:none; } }
+img,video { display:block; max-width:100%; }
+a { color:inherit; text-decoration:none; }
+::selection { background:var(--wine); color:var(--cream); }
+.skip { position:absolute; left:-999px; top:8px; z-index:60; background:var(--ink); color:var(--paper); padding:10px 16px; }
+.skip:focus { left:12px; }
+:focus-visible { outline:1.5px solid var(--wine); outline-offset:3px; }
+
+/* ---- micro-animation primitives (driven by home.js) ---- */
+[data-reveal] { opacity:0; transform:translateY(16px); transition:opacity .9s var(--ease),transform .9s var(--ease); }
+[data-reveal].in { opacity:1; transform:none; }
+[data-clip] { clip-path:inset(0 0 100% 0); transition:clip-path 1.15s var(--ease); }
+[data-clip].in { clip-path:inset(0 0 0 0); }
+[data-clip] img { transform:scale(1.08); transition:transform 1.7s var(--ease); }
+[data-clip].in img { transform:scale(1); }
+.word { display:inline-block; overflow:hidden; vertical-align:top; }
+.word__in { display:inline-block; transform:translateY(115%); transition:transform .9s var(--spring); }
+[data-split].in .word__in { transform:translateY(0); }
+body.no-anim [data-reveal],body.no-anim [data-clip] { opacity:1; transform:none; clip-path:none; }
+body.no-anim .word__in { transform:none; }
+
+/* ---- custom cursor ---- */
+.cursor { position:fixed; top:0; left:0; z-index:200; width:9px; height:9px; border-radius:50%; background:var(--wine);
+  pointer-events:none; display:grid; place-items:center;
+  transition:width .3s var(--spring),height .3s var(--spring),background .3s,border-color .3s; }
+.cursor.is-hover { width:46px; height:46px; background:rgba(138,46,60,0.12); border:1px solid var(--wine); }
+
+/* =========================================================================
+   NAV (over the hero)
+   ========================================================================= */
+.fnav { position:absolute; top:0; left:0; right:0; z-index:10; display:flex; align-items:center; justify-content:space-between;
+  padding:clamp(22px,2.4vw,40px) clamp(22px,3vw,56px); color:var(--cream); }
+.fnav__brand { display:inline-flex; font-family:"Bodoni Moda",Didot,"Times New Roman",serif; font-style:italic; font-weight:700;
+  font-size:clamp(17px,1.55vw,22px); letter-spacing:0.02em; line-height:1; color:var(--cream-2); transition:color .5s var(--ease); will-change:transform; }   /* S.C — fixed Bodoni Moda to match the homepage SANVIR CHANA. wordmark, regardless of per-film theme */
+@media (hover:hover) { .fnav__brand:hover { color:var(--cream); } }
+.fnav__links { display:flex; gap:clamp(16px,1.8vw,26px); }
+.fnav__links a { font-family:var(--sans); font-size:10.5px; font-weight:500; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--cream-2); position:relative; will-change:transform; }
+.fnav__links a::after { content:""; position:absolute; left:0; right:0; bottom:-4px; height:1px; background:var(--cream);
+  transform:scaleX(0); transform-origin:left; transition:transform .4s var(--spring); }
+@media (hover:hover) { .fnav__links a:hover { color:var(--cream); } .fnav__links a:hover::after { transform:scaleX(1); } }
+
+/* =========================================================================
+   HERO
+   ========================================================================= */
+.fhero { position:relative; min-height:100svh; display:flex; align-items:flex-end; overflow:hidden;
+  background:var(--oxblood); color:var(--cream); }
+.fhero__media { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:var(--img); }
+.fhero__scrim { position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top, rgba(15,6,9,0.80) 0%, rgba(15,6,9,0.12) 48%, rgba(15,6,9,0.42) 100%); }
+.fhero__inner { position:relative; z-index:2; width:100%;
+  padding:clamp(28px,4vw,70px) clamp(22px,3vw,56px) clamp(34px,5vh,72px); }
+.fhero__kicker { font-family:var(--sans); font-size:11px; font-weight:500; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--cream-2); margin-bottom:clamp(14px,1.6vw,22px); }
+.fhero__title { font-family:var(--serif); font-weight:500; font-size:clamp(2.8rem,8vw,7rem); line-height:.92;
+  letter-spacing:-.02em; color:var(--cream); max-width:15ch; }
+.fhero__couple { font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(1.3rem,2vw,2rem);
+  color:var(--cream); margin-top:clamp(14px,1.6vw,22px); }
+.fhero__cue { display:inline-flex; align-items:center; gap:10px; margin-top:clamp(24px,3vw,40px);
+  font-family:var(--sans); font-size:10.5px; font-weight:500; letter-spacing:.2em; text-transform:uppercase; color:var(--cream-3); }
+.fhero__cue i { width:1px; height:32px; background:var(--cream-line); position:relative; overflow:hidden; }
+.fhero__cue i::after { content:""; position:absolute; inset:0; background:var(--cream-2); transform:translateY(-100%); animation:fdrop 2.2s var(--ease) infinite; }
+@keyframes fdrop { 0% { transform:translateY(-100%);} 55%,100% { transform:translateY(100%);} }
+
+/* =========================================================================
+   BODY — the editorial piece
+   ========================================================================= */
+.fbody { background:var(--paper); padding:clamp(64px,11vh,150px) clamp(22px,3vw,56px) clamp(50px,7vh,100px); }
+.fwrap { max-width:660px; margin:0 auto; }
+.fkicker { font-family:var(--sans); font-size:11px; font-weight:500; letter-spacing:.2em; text-transform:uppercase; color:var(--wine); }
+.flead { font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(1.6rem,3.2vw,2.6rem); line-height:1.22;
+  color:var(--ink); margin:clamp(16px,2vw,26px) 0 0; max-width:22ch; }
+.fwrite { margin-top:clamp(36px,5vh,64px); }
+.fwrite p { font-family:var(--sans); font-size:clamp(14px,1vw,15.5px); line-height:1.85; color:var(--ink-2); margin-bottom:clamp(18px,2vh,26px); }
+.fwrite p.drop::first-letter { float:left; font-family:var(--serif); font-weight:500; font-size:3.4em; line-height:.78; padding:6px 12px 0 0; color:var(--wine); }
+
+.fshot { margin:clamp(36px,5.5vh,70px) 0; overflow:hidden; }
+.fshot img { width:100%; height:auto; aspect-ratio:3/2; object-fit:cover; filter:var(--img); }
+.fshot--tall { max-width:460px; margin-left:auto; margin-right:auto; }   /* a centred portrait plate (e.g. Olivia) */
+.fshot--tall img { aspect-ratio:5/6; }
+.fshot figcaption { margin-top:11px; font-family:var(--sans); font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); }
+
+/* a wider plate that breaks out of the reading column */
+.fwide { max-width:1120px; margin:clamp(54px,9vh,120px) auto; overflow:hidden; padding:0 clamp(22px,3vw,56px); }
+.fwide img { width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; filter:var(--img); }
+.fwide figcaption { margin-top:11px; font-family:var(--sans); font-size:10px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); }
+
+.fwatch { display:inline-flex; align-items:center; gap:11px; margin-top:clamp(8px,1.4vh,18px);
+  font-family:var(--sans); font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ink);
+  border-bottom:1.5px solid var(--wine); padding-bottom:6px; will-change:transform; }
+.fwatch i { font-style:normal; display:inline-block; transition:transform .45s var(--spring); }
+@media (hover:hover) { .fwatch:hover i { transform:translate(3px,-3px); } }
+
+/* credits / spec sheet */
+.fcreds { max-width:660px; margin:clamp(54px,8vh,104px) auto 0; border-top:1px solid var(--line); padding-top:clamp(28px,4vh,46px); }
+.fcreds dl { display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(20px,2.6vh,32px) clamp(24px,3vw,50px); margin:0; }
+.fcreds dt { font-family:var(--sans); font-size:10px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-3); margin-bottom:6px; }
+.fcreds dd { font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(1.05rem,1.5vw,1.35rem); color:var(--ink); }
+
+/* =========================================================================
+   THE SCORE — a small record that plays the original score (Marcus Herne)
+   ========================================================================= */
+.fscore { max-width:660px; margin:clamp(48px,7vh,90px) auto 0; padding-top:clamp(28px,4vh,46px);
+  border-top:1px solid var(--line); display:flex; align-items:center; gap:clamp(22px,3.4vw,48px); }
+.record { position:relative; flex:none; width:clamp(100px,11vw,136px); height:clamp(100px,11vw,136px);
+  border:0; padding:0; background:none; border-radius:50%; cursor:pointer; will-change:transform; }
+@media (hover:hover) and (pointer:fine) { .record { cursor:none; } }
+.record__svg { display:block; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 10px 22px rgba(15,6,9,0.26)); }
+.record__disc { transform-box:view-box; transform-origin:50px 50px; animation:spin33 2.6s linear infinite; animation-play-state:paused; }
+.fscore.is-playing .record__disc { animation-play-state:running; }
+@keyframes spin33 { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .record__disc { animation:none; } }
+.record__svg .vinyl  { fill:#15110d; }
+.record__svg .groove { fill:none; stroke:rgba(242,235,225,0.09); stroke-width:0.5; }
+.record__svg .speck  { fill:rgba(242,235,225,0.32); }
+.record__svg .label  { fill:var(--oxblood); }
+.record__arm { transform-box:view-box; transform-origin:86px 14px; transform:rotate(26deg); transition:transform .6s var(--spring); }
+.fscore.is-playing .record__arm { transform:rotate(0deg); }
+.record__svg .arm-rod   { stroke:var(--ink-2); stroke-width:1.8; stroke-linecap:round; }
+.record__svg .arm-head  { fill:var(--ink-2); }
+.record__svg .arm-pivot { fill:var(--paper); stroke:var(--ink-2); stroke-width:1.5; }
+.record__mark { position:absolute; inset:0; display:grid; place-items:center; pointer-events:none;
+  font-family:var(--serif); font-style:italic; font-weight:500; font-size:clamp(13px,1.5vw,17px); letter-spacing:0.04em; color:var(--cream); }
+.fscore__meta { min-width:0; }
+.fscore__kicker { font-family:var(--sans); font-size:11px; font-weight:500; letter-spacing:.2em; text-transform:uppercase; color:var(--wine); }
+.fscore__title { font-family:var(--serif); font-style:italic; font-weight:500; font-size:clamp(1.45rem,2.4vw,2rem); line-height:1.1; color:var(--ink); margin-top:7px; }
+.fscore__by { font-family:var(--sans); font-size:clamp(12.5px,1vw,13.5px); line-height:1.6; color:var(--ink-2); margin-top:clamp(8px,1.2vh,12px); max-width:32ch; }
+.fscore__cue { display:inline-flex; align-items:center; gap:9px; margin-top:clamp(13px,1.7vh,19px);
+  font-family:var(--sans); font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--ink);
+  border-bottom:1.5px solid var(--wine); padding-bottom:5px; }
+.fscore__cue i { font-style:normal; font-size:9px; line-height:1; }
+@media (max-width:600px) { .fscore { gap:22px; } }
+
+/* =========================================================================
+   NEXT FILM + FOOTER (burgundy base)
+   ========================================================================= */
+.fnext { display:block; background:var(--oxblood); color:var(--cream); text-align:center;
+  padding:clamp(56px,10vh,130px) clamp(22px,3vw,56px); position:relative; overflow:hidden; }
+.fnext__label { display:block; font-family:var(--sans); font-size:11px; font-weight:500; letter-spacing:.22em; text-transform:uppercase; color:var(--cream-3); }
+.fnext__title { display:block; font-family:var(--serif); font-style:italic; font-weight:500; font-size:clamp(2.4rem,6vw,5rem);
+  line-height:1; color:var(--cream); margin:clamp(14px,1.6vw,22px) 0 8px; transition:transform .6s var(--spring); }
+.fnext__couple { display:block; font-family:var(--sans); font-size:12px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:var(--cream-2); }
+@media (hover:hover) { .fnext:hover .fnext__title { transform:translateY(-5px); } }
+
+.ffoot { background:var(--oxblood); color:var(--cream-3); border-top:1px solid var(--cream-line);
+  padding:clamp(22px,3vw,38px) clamp(22px,3vw,56px); display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+.ffoot a { color:var(--cream-2); font-family:var(--sans); font-size:12px; letter-spacing:.06em; will-change:transform; }
+@media (hover:hover) { .ffoot a:hover { color:var(--cream); } }
+.ffoot__copy { font-family:var(--sans); font-size:11px; letter-spacing:.1em; }
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+@media (max-width:600px) {
+  body { cursor:auto; }
+  .cursor { display:none; }
+  .fcreds dl { grid-template-columns:1fr; }
+  .fhero__title { font-size:clamp(2.5rem,12vw,4rem); }
+}

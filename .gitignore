@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Local tooling / editor config
+.claude/
+
+# ── Heavy source material — NOT part of the deployable site ──────────────────
+/Videos/
+/WEBSITE IDEAS/
+/PICTURES TO CHOOSE FROM/
+
+# Raw camera stills & DaVinci frame-grab originals
+# (the web-optimized copies the site actually uses live in site/assets/img/full/)
+/site/assets/img/Anoop & Rasans/
+/site/assets/img/Sam & Olivia pictures/
+
+# Loose source / reference imagery dropped in the img root.
+# The site only references /full, /thumb and logo-sanvir-chana.png, so keep just that.
+/site/assets/img/*.png
+/site/assets/img/*.jpg
+/site/assets/img/*.jpeg
+!/site/assets/img/logo-sanvir-chana.png
+
+# Unused / placeholder videos — the site references only sam-olivia.mp4 and anoop-rasans.mp4
+/site/assets/video/*.mp4
+!/site/assets/video/sam-olivia.mp4
+!/site/assets/video/anoop-rasans.mp4
+/site/assets/video/*.sb-*

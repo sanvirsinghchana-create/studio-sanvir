@@ -1,0 +1,292 @@
+/* =========================================================================
+   SANVIR CHANA — WEDDING FILMS · three independently-scrolling columns
+   Identity (burgundy) · The Journal (a written feature) · The Films (playing)
+   Type: Playfair Display (display) + Inter (text)
+   ========================================================================= */
+
+:root {
+  --paper:   #efe9de;                 /* warm paper — middle */
+  --paper-2: #e5ddcd;
+  --ink:     #1a1712;
+  --ink-2:   rgba(26,23,18,0.58);
+  --ink-3:   rgba(26,23,18,0.40);
+  --line:    rgba(26,23,18,0.16);
+  --line-2:  rgba(26,23,18,0.09);
+
+  --oxblood: #471a24;                 /* deep burgundy — identity + film surround */
+  --wine:    #8a2e3c;
+  --cream:   #f2ebe1;
+  --cream-2: rgba(242,235,225,0.62);
+  --cream-3: rgba(242,235,225,0.40);
+  --cream-line: rgba(242,235,225,0.20);
+
+  --serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --sans:  "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --img: contrast(1.03) saturate(1.05);
+}
+
+* , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; overflow: hidden; }
+@media (hover: hover) and (pointer: fine) { body { cursor: none; } }
+img, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--wine); color: var(--cream); }
+.skip { position: absolute; left: -999px; top: 8px; z-index: 60; background: var(--ink); color: var(--paper); padding: 10px 16px; }
+.skip:focus { left: 12px; }
+:focus-visible { outline: 1.5px solid var(--wine); outline-offset: 3px; }
+.label { font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2); }
+
+/* ---- micro-animation primitives -------------------------------------- */
+[data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+[data-reveal].in { opacity: 1; transform: none; }
+[data-clip] { clip-path: inset(0 0 100% 0); transition: clip-path 1.15s var(--ease); }
+[data-clip].in { clip-path: inset(0 0 0% 0); }
+[data-clip] img, [data-clip] video { transform: scale(1.08); transition: transform 1.7s var(--ease); }
+[data-clip].in img, [data-clip].in video { transform: scale(1); }
+.word { display: inline-block; overflow: hidden; vertical-align: top; }
+.word__in { display: inline-block; transform: translateY(115%); transition: transform 0.9s var(--spring); }
+[data-split].in .word__in { transform: translateY(0); }
+body.no-anim [data-reveal], body.no-anim [data-clip] { opacity: 1; transform: none; clip-path: none; }
+body.no-anim .word__in { transform: none; }
+
+/* ---- custom cursor --------------------------------------------------- */
+.cursor { position: fixed; top: 0; left: 0; z-index: 200; width: 9px; height: 9px; border-radius: 50%; background: var(--wine);
+  pointer-events: none; display: grid; place-items: center;
+  transition: width 0.3s var(--spring), height 0.3s var(--spring), background 0.3s, border-color 0.3s; }
+.cursor.is-hover { width: 46px; height: 46px; background: rgba(138,46,60,0.12); border: 1px solid var(--wine); }
+.cursor.is-media { width: 82px; height: 82px; background: rgba(0,0,0,0.16); border: 1px solid var(--cream); }
+.cursor::after { content: ""; font-family: var(--sans); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cream); }
+.cursor.is-media::after { content: "Watch"; }
+
+/* =========================================================================
+   THE THREE INDEPENDENT COLUMNS
+   ========================================================================= */
+.layout { display: grid; grid-template-columns: 29% 27% 44%; height: 100svh; }
+.col { height: 100svh; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.col::-webkit-scrollbar { display: none; }
+/* opening reveal — columns fade up from a blank cream ground (studio-simms-style) */
+.is-intro .col { opacity: 0; transition: opacity 0.95s var(--ease); }
+.is-intro .col.is-in { opacity: 1; }
+.col--id, .col--feature { padding: clamp(24px, 2.2vw, 46px); }
+.col--feature, .col--reel { border-left: 1px solid var(--line); }
+
+/* ---- 1 · IDENTITY (burgundy, spacious — minimal like the reference) ---- */
+.col--id { background: var(--oxblood); color: var(--cream); padding: clamp(26px,2.4vw,50px); container-type: inline-size; }
+.col--id ::selection { background: var(--cream); color: var(--oxblood); }
+.id__mast { min-height: calc(100svh - clamp(52px,4.8vw,100px)); display: flex; flex-direction: column; }
+.id__top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+
+/* the maker's mark — two initials joined: a couple, and a chop, in one glyph */
+.brand { display: inline-flex; will-change: transform; }
+.brand__mono { display: inline-flex; font-family: "Bodoni Moda", var(--serif); font-style: italic; font-weight: 700;
+  font-size: clamp(18px,1.6vw,22px); letter-spacing: 0.02em; line-height: 1; color: var(--cream-2); transition: color 0.5s var(--ease); }   /* S.C — Bodoni Moda to match the SANVIR CHANA. wordmark logo */
+@media (hover: hover) { .brand:hover .brand__mono { color: var(--cream); } }
+
+.id__nav { display: flex; gap: clamp(16px,1.6vw,24px); }
+.id__nav a { font-family: var(--sans); font-size: 10.5px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--cream-2); position: relative; will-change: transform; }
+.id__nav a::after { content:""; position:absolute; left:0; right:0; bottom:-4px; height:1px; background: var(--cream);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.4s var(--spring); }
+@media (hover: hover) { .id__nav a:hover { color: var(--cream); } .id__nav a:hover::after { transform: scaleX(1); } }
+
+/* the wordmark — the s.s. Chana logo (gold script), set on the burgundy */
+.logo { margin-top: auto; transform: scale(calc(1 + 0.22 * var(--expand, 0))); transform-origin: left bottom; will-change: transform; }
+.logo__word { display: block; line-height: 0; }
+.logo__img { display: block; width: clamp(206px, 18.5vw, 248px); height: auto; }   /* the white SANVIR CHANA. wordmark — wide, thin Didone lockup (~13.6:1) */
+.logo__meta { display: flex; align-items: center; gap: 13px; margin-top: clamp(20px,2.2vw,30px); }
+.logo__rule { display: block; width: clamp(26px,3vw,46px); height: 1px; background: var(--cream-line); flex: none; }
+.logo__desc { font-family: var(--sans); font-size: 10.5px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cream-2); }
+
+/* the craft mark — shot exclusively on 16mm (a Bolex + a projector, outlined) */
+.filmstock { display: flex; align-items: center; gap: clamp(11px,1.2vw,15px); margin-top: clamp(22px,2.6vw,34px); }
+.filmstock__icons { display: inline-flex; align-items: flex-end; gap: 9px; color: var(--cream); flex: none; }
+.filmstock__icons svg { display: block; height: clamp(22px,2.2vw,27px); width: auto; overflow: visible; }
+.filmstock__icons svg rect, .filmstock__icons svg circle, .filmstock__icons svg path, .filmstock__icons svg line {
+  fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.filmstock__icons .reel { transform-box: fill-box; transform-origin: center; animation: spin16 9s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .filmstock__icons .reel { animation: none; } }
+@keyframes spin16 { to { transform: rotate(360deg); } }
+.filmstock__text { font-family: var(--sans); font-size: 9.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; line-height: 1.5; color: var(--cream-3); }
+
+.id__cue { display: inline-flex; align-items: center; gap: 10px; margin-top: clamp(24px,2.6vw,38px);
+  font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-3); }
+.id__cue i { width: 1px; height: 34px; background: var(--cream-line); position: relative; overflow: hidden; }
+.id__cue i::after { content:""; position:absolute; inset:0; background: var(--cream-2); transform: translateY(-100%); animation: drop 2.2s var(--ease) infinite; }
+@keyframes drop { 0% { transform: translateY(-100%);} 55%,100% { transform: translateY(100%);} }
+.id__about { max-width: 38ch; padding-top: clamp(52px, 9vh, 130px); }
+.id__about > * + * { margin-top: clamp(18px,2vw,26px); }
+.id__bio > * + * { margin-top: clamp(18px,2vw,26px); }
+.id__lead { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(1.7rem, 2.5vw, 2.5rem); line-height: 1.12; color: var(--cream); }
+.id__about p:not(.label):not(.id__lead) { font-family: var(--sans); font-size: clamp(0.96rem,1.05vw,1.06rem); line-height: 1.6; color: var(--cream-2); }
+.id__creds { display: flex; flex-direction: column; gap: clamp(11px,1.2vw,15px); padding: clamp(18px,2vw,26px) 0; border-top: 1px solid var(--cream-line); border-bottom: 1px solid var(--cream-line); }
+.id__creds > div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.id__creds dt { font-family: var(--sans); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream-3); }
+.id__creds dd { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(1.05rem,1.4vw,1.3rem); color: var(--cream); text-align: right; }
+.id__portrait { overflow: hidden; aspect-ratio: 2/3; background: rgba(0,0,0,0.2); margin-top: clamp(26px,3vw,40px) !important; }   /* 2/3 = native ratio of the SL.607 portrait → shows the full frame, uncropped */
+.id__portrait img { width: 100%; height: 100%; object-fit: cover; filter: var(--img); }
+@media (hover: hover) { .id__portrait:hover img { transform: scale(1.04); transition: transform 1.3s var(--ease); } }
+.id__contact .label { display: block; color: var(--cream-3); margin-bottom: clamp(14px,1.6vw,20px); }
+.id__mail { display: inline-block; font-family: var(--serif); font-weight: 400; font-size: clamp(1.5rem,2.3vw,2.1rem); color: var(--cream); position: relative; will-change: transform; }
+.id__mail::after { content:""; position:absolute; left:0; right:0; bottom:0; height:1.5px; background: var(--cream); transform: scaleX(0); transform-origin: left; transition: transform 0.55s var(--spring); }
+@media (hover: hover) { .id__mail:hover::after { transform: scaleX(1); } }
+.id__links { display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: clamp(16px,1.8vw,24px); }
+.id__links a { font-size: 12.5px; color: var(--cream); position: relative; will-change: transform; }
+.id__links a::after { content:""; position:absolute; left:0; right:0; bottom:-2px; height:1px; background: var(--cream); transform: scaleX(0); transform-origin: left; transition: transform 0.4s var(--spring); }
+@media (hover: hover) { .id__links a:hover::after { transform: scaleX(1); } }
+.id__copy { font-size: 11.5px; color: var(--cream-3); margin-top: clamp(24px,2.6vw,36px); padding-bottom: clamp(20px,3vh,40px); }
+
+/* when the column expands (takeover), the About fills it as a two-column editorial spread */
+@container (min-width: 640px) {
+  .id__about { max-width: none; display: grid; grid-template-columns: 1.05fr 0.92fr;
+    column-gap: clamp(34px, 4.4cqw, 76px); align-items: start; }
+  .id__about > * + * { margin-top: 0; }
+  .id__lead { grid-column: 1 / -1; grid-row: 1; font-size: clamp(2.4rem, 4.9cqw, 3.9rem); line-height: 1.06; max-width: 20ch; margin-bottom: clamp(30px, 3.6cqw, 58px); }
+  .id__bio { grid-column: 1; grid-row: 2; }
+  .id__bio > * + * { margin-top: clamp(16px, 1.7cqw, 24px); }
+  .id__portrait { grid-column: 2; grid-row: 2; margin: 0 !important; }
+  .id__contact { grid-column: 1 / -1; grid-row: 3; margin-top: clamp(44px, 5cqw, 90px); }
+  .id__about p:not(.label):not(.id__lead) { font-size: clamp(1.02rem, 1.45cqw, 1.3rem); line-height: 1.62; }
+  .id__creds dd { font-size: clamp(1.1rem, 1.55cqw, 1.4rem); }
+  .id__mail { font-size: clamp(1.7rem, 2.7cqw, 2.5rem); }
+}
+/* the About closes on a small film-stock signature line (overrides the body-paragraph size in both states) */
+.id__about p.id__filmnote:not(.id__lead) { margin-top: clamp(22px,2.6vw,34px); font-size: 10px; line-height: 1.7;
+  font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream-3); }
+
+/* ---- 2 · THE FEATURE (the written piece) ---- */
+.col--feature { position: relative; }
+/* vertical reading-rail pinned to the column's left edge; fills top→bottom as you read */
+.ft__progress { position: sticky; top: 0; z-index: 5; height: 0; }
+.ft__progress::before { content: ""; position: absolute; top: calc(-1 * clamp(24px,2.2vw,46px)); left: calc(-1 * clamp(24px,2.2vw,46px) + 16px); width: 2px; height: 100svh; background: var(--line-2); }
+.ft__progress span { position: absolute; top: calc(-1 * clamp(24px,2.2vw,46px)); left: calc(-1 * clamp(24px,2.2vw,46px) + 16px); width: 2px; height: 100svh; background: var(--wine); transform: scaleY(0); transform-origin: top; will-change: transform; }
+.ft__head { padding-top: clamp(2px,0.6vw,8px); }
+.ft__kicker { display: block; font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--wine); }
+/* the featured-film lockup — project type (roman) over name (italic), à la the reference */
+.ft__title { border-top: 1px solid var(--line); margin-top: clamp(16px,1.8vw,24px); padding-top: clamp(20px,2.2vw,30px); }
+.ft__type { display: block; font-family: var(--serif); font-weight: 500; font-size: clamp(1.7rem,2.7vw,2.5rem); line-height: 1.05; letter-spacing: -0.01em; color: var(--ink); }
+.ft__name { display: block; font-family: var(--serif); font-style: italic; font-weight: 500; font-size: clamp(1.9rem,3vw,2.8rem); line-height: 1.05; letter-spacing: -0.01em; color: var(--ink); margin-top: 1px; }
+.ft__hero { position: relative; display: block; overflow: hidden; aspect-ratio: 1/1; background: var(--paper-2); margin-top: clamp(26px,3.2vh,44px); }   /* 1/1 = the square Sam & Olivia couple portrait, full-frame */
+.ft__hero img { width: 100%; height: 100%; object-fit: cover; filter: var(--img); transition: transform 1.3s var(--ease); }
+.ft__hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(18,8,10,0.55), rgba(18,8,10,0) 38%); }
+@media (hover: hover) { .ft__hero:hover img { transform: scale(1.04); } }
+.ft__view { position: absolute; right: clamp(12px,1.4vw,18px); bottom: clamp(12px,1.4vw,18px); z-index: 2;
+  font-family: var(--sans); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cream); }
+.ft__view i { font-style: normal; display: inline-block; transition: transform 0.45s var(--spring); }
+@media (hover: hover) { .ft__hero:hover .ft__view i { transform: translate(3px,-3px); } }
+.ft__credits { display: flex; justify-content: space-between; gap: 16px; margin-top: clamp(14px,1.6vh,20px);
+  font-family: var(--sans); font-size: 10.5px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+
+/* the central section opens with a FULL-BLEED image covering the top half, title overlaid, + writing + scroll cue */
+.ft__cover { position: relative; z-index: 6; }   /* lift above the reading rail (z-index 5) across this region */
+.ft__hero--bleed { position: relative; display: block; overflow: hidden; aspect-ratio: auto; height: 52svh; min-height: 320px;
+  margin: calc(-1 * clamp(24px,2.2vw,46px)) calc(-1 * clamp(24px,2.2vw,46px)) 0;   /* break out of the column padding → edge to edge */
+  background: var(--oxblood); }
+.ft__hero--bleed img { width: 100%; height: 100%; object-fit: cover; object-position: center 32%; }
+.ft__hero--bleed::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgba(18,8,10,0.80) 0%, rgba(18,8,10,0.03) 48%, rgba(18,8,10,0.30) 100%); }
+.ft__hero--bleed .ft__head { position: absolute; z-index: 2; left: clamp(24px,2.2vw,46px); right: clamp(24px,2.2vw,46px); bottom: clamp(20px,2.6vw,34px); padding: 0; }
+.ft__hero--bleed .ft__kicker { color: var(--cream-2); }
+.ft__hero--bleed .ft__title { border-top: none; margin-top: clamp(8px,1vw,12px); padding-top: 0; }
+.ft__hero--bleed .ft__type, .ft__hero--bleed .ft__name { color: var(--cream); }
+.ft__hero--bleed .ft__view { z-index: 2; right: clamp(24px,2.2vw,46px); top: clamp(16px,2vw,24px); bottom: auto; }
+.ft__coverfoot { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin-top: clamp(20px,2.6vh,34px); }
+.ft__coupleline { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: clamp(1.35rem,2.1vw,1.8rem); line-height: 1; color: var(--ink); }
+.ft__placeline { font-family: var(--sans); font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-top: clamp(7px,1vw,10px); }
+.ft__cue { display: inline-flex; flex-direction: column; align-items: center; gap: 9px; flex: none;
+  font-family: var(--sans); font-size: 9.5px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); }
+.ft__cue i { width: 1px; height: 32px; background: var(--line); position: relative; overflow: hidden; }
+.ft__cue i::after { content: ""; position: absolute; inset: 0; background: var(--wine); transform: translateY(-100%); animation: drop 2.2s var(--ease) infinite; }
+@media (prefers-reduced-motion: reduce) { .ft__cue i::after { animation: none; } }
+.ft__body { margin-top: clamp(26px,3vh,40px); padding-top: clamp(24px,2.6vh,34px); border-top: 1px solid var(--line); max-width: 46ch; }
+.ft__body > p { font-family: var(--sans); font-size: 11px; line-height: 1.9; color: var(--ink-2); margin-bottom: clamp(14px,1.5vw,20px); }
+.ft__body .ft__lead { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(1.25rem,1.6vw,1.6rem); line-height: 1.3; color: var(--ink); margin-bottom: clamp(18px,2vh,26px); }
+.ft__shot { overflow: hidden; margin: clamp(26px,3.2vh,42px) 0; }
+.ft__shot img { display: block; width: 100%; height: auto; aspect-ratio: 3/2; object-fit: cover; filter: var(--img); transition: transform 1.3s var(--ease); }
+@media (hover: hover) { .ft__shot:hover img { transform: scale(1.03); } }
+.ft__shot figcaption { margin-top: 10px; font-family: var(--sans); font-size: 9.5px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.ft__body .ft__sign { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink-3); margin-top: clamp(20px,2.4vh,30px); padding-bottom: clamp(30px,5vh,64px); }
+.ft__shot--tall img { aspect-ratio: 2/3; }   /* the Sam & Olivia portrait shows full-frame, uncropped */
+
+/* the "Behind the camera" still fills its section full-bleed like the cover above; the body bar peeks below to keep inviting the scroll */
+.ft__shot--fill { position: relative; z-index: 6; margin: clamp(18px,2.2vh,28px) calc(-1 * clamp(24px,2.2vw,46px)); }
+.ft__shot--fill img { width: 100%; height: auto; aspect-ratio: 3/2; object-position: center; }   /* native 3/2 full-bleed → full frame, the person shooting stays in view (no side-crop) */
+.ft__shot--fill::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, rgba(18,8,10,0.58), rgba(18,8,10,0) 36%); }
+.ft__shot--fill figcaption { position: absolute; z-index: 2; left: clamp(24px,2.2vw,46px); bottom: clamp(14px,1.6vw,20px); margin: 0; color: var(--cream); }
+
+/* ---- Feature takeover: scrolling the middle expands it LEFT over the identity column, then fills like the About spread ---- */
+.col--id { opacity: calc(1 - 0.92 * var(--expand-mid, 0)); }   /* identity fades out as the feature takes its place */
+.col--feature.ft--wide .ft__head { max-width: 42ch; }
+.col--feature.ft--wide .ft__body { max-width: none; columns: 2; column-gap: clamp(36px, 4vw, 72px); }
+.col--feature.ft--wide .ft__body > p { font-size: 12.5px; }
+.col--feature.ft--wide .ft__body .ft__lead { column-span: all; font-size: clamp(1.5rem, 1.9vw, 2.05rem); line-height: 1.26; max-width: 30ch; }
+.col--feature.ft--wide .ft__body .ft__sign { column-span: all; }
+.col--feature.ft--wide .ft__body .ft__shot { column-span: all; break-inside: avoid; margin: clamp(30px,3.4vh,48px) 0; }
+.col--feature.ft--wide .ft__body .ft__shot--tall { text-align: center; }
+.col--feature.ft--wide .ft__body .ft__shot--tall img { width: auto; height: clamp(380px, 54vh, 540px); max-width: 100%; margin: 0 auto; }
+
+/* ---- 3 · THE FILMS (each wedding full-bleed; scroll sideways to the next) ---- */
+.col--reel { position: relative; padding: 0; background: var(--oxblood); overflow: hidden; opacity: calc(1 - 0.92 * var(--expand, 0)); }
+.reel__track { position: relative; display: flex; height: 100%; overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }
+.reel__track::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.wed { position: relative; flex: 0 0 100%; height: 100%; overflow: hidden; scroll-snap-align: start; }
+.wed__vid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: var(--img); }
+.wed__scrim { position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgba(20,8,11,0.82) 0%, rgba(20,8,11,0.06) 42%, rgba(20,8,11,0.34) 100%); }
+.wed__overlay { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; justify-content: space-between;
+  padding: clamp(28px,3vw,56px); color: var(--cream); }
+.wed__no { font-family: var(--mono, var(--sans)); font-family: var(--sans); font-size: 12px; font-weight: 500; letter-spacing: 0.18em; color: rgba(242,235,225,0.7); }
+.wed__lower { max-width: 22ch; }
+.wed__where { font-family: var(--sans); font-size: clamp(11.5px,1vw,13px); font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(242,235,225,0.78); margin-bottom: clamp(10px,1.2vw,16px); }
+.wed__couple { font-family: var(--serif); font-weight: 500; font-size: clamp(3rem, 6vw, 6.6rem); line-height: 0.94; letter-spacing: -0.01em; color: var(--cream); }
+.wed__view { display: inline-flex; align-items: center; gap: 8px; margin-top: clamp(16px,1.8vw,26px);
+  font-family: var(--sans); font-size: 11.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cream); }
+.wed__view i { font-style: normal; transition: transform 0.45s var(--spring); display: inline-block; }
+@media (hover: hover) { .wed__overlay:hover .wed__view i { transform: translateX(8px); } }
+
+/* arrows / underlines that spring (shared) */
+.wed__view i, .ft__title i { display: inline-block; }
+
+/* pagination dots + scroll hint — pinned over the reel, never scroll with it */
+.reel__nav { position: absolute; right: clamp(22px,3vw,52px); bottom: clamp(24px,3vw,52px);
+  z-index: 4; display: flex; align-items: center; gap: clamp(14px,1.6vw,22px); }
+.reel__hint { display: inline-flex; align-items: center; gap: 7px; font-family: var(--sans);
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(242,235,225,0.72); transition: opacity 0.7s var(--ease); }
+.reel__hint i { font-style: normal; display: inline-block; animation: reelNudge 1.6s var(--ease) infinite; }
+.reel--moved .reel__hint { opacity: 0; pointer-events: none; }
+.reel__dots { display: flex; align-items: center; gap: 9px; }
+.reel__dot { width: 7px; height: 7px; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 1px solid rgba(242,235,225,0.5); background: transparent;
+  transition: background 0.45s var(--ease), transform 0.45s var(--spring), border-color 0.45s var(--ease); }
+.reel__dot.is-on { background: var(--cream); border-color: var(--cream); transform: scale(1.4); }
+@media (hover: hover) { .reel__dot:hover { border-color: var(--cream); transform: scale(1.2); } }
+@keyframes reelNudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+
+/* =========================================================================
+   RESPONSIVE — below 1040px the columns stack and the page scrolls
+   ========================================================================= */
+@media (max-width: 1040px) {
+  body { overflow: auto; cursor: auto; }
+  .cursor { display: none; }
+  .layout { grid-template-columns: 1fr; height: auto; }
+  .col { height: auto; min-height: 0; overflow: visible; }
+  .col--id, .col--feature { padding: clamp(26px,7vw,52px); }
+  .col--feature, .col--reel { border-left: none; border-top: 1px solid var(--line); }
+  .ft__progress { display: none; }
+  .id__mast { min-height: 84svh; }
+  .col--reel { height: 80svh; overflow: hidden; }
+  .wed { flex: 0 0 90%; height: 100%; min-height: 0; }
+}
+@media (max-width: 560px) { .id__mast { min-height: 76svh; } .col--reel { height: 70svh; } .wed { flex: 0 0 92%; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  [data-reveal], [data-clip] { opacity: 1; transform: none; clip-path: none; }
+  .word__in { transform: none; }
+}
