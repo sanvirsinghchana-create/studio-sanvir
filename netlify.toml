@@ -1,0 +1,5 @@
+# Netlify deploy configuration for the Studio Sanvir site.
+# The website lives in the site/ subfolder of this repo, so publish that.
+[build]
+  publish = "site"
+  command = ""
