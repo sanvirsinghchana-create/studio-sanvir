@@ -49,6 +49,19 @@
     window.addEventListener("load", sweep);                  // again once images settle
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(sweep);
     setTimeout(sweep, 600);
+
+    /* Reveal on scroll too. The homepage's three columns each scroll independently
+       (overflow-y:auto), and a viewport-rooted IntersectionObserver doesn't reliably
+       fire for that inner-container scrolling — so images you scroll down to could stay
+       clipped. Sweeping on every scroll (throttled to one pass per frame) guarantees
+       anything scrolled into view is revealed, on the columns and on the page itself. */
+    var queued = false;
+    var onScroll = function () {
+      if (queued) return; queued = true;
+      requestAnimationFrame(function () { queued = false; sweep(); });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.querySelectorAll(".col").forEach(function (el) { el.addEventListener("scroll", onScroll, { passive: true }); });
   }
 
   /* ---- wedding films play while in view (each fills its section) ---- */
