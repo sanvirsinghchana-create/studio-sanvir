@@ -205,18 +205,52 @@
 
   function initYear() { document.querySelectorAll("[data-year]").forEach(function (e) { e.textContent = new Date().getFullYear(); }); }
 
-  /* ---- opening reveal — fade the columns up from a blank ground, wordmark last ---- */
-  function initIntro() {
+  /* ---- fade the three columns up from the blank ground, wordmark column last ---- */
+  function revealColumns() {
     var html = document.documentElement;
-    if (!html.classList.contains("is-intro")) return;   // inline head script arms this; absent = no intro
     var cols = [".col--reel", ".col--feature", ".col--id"].map(function (s) { return document.querySelector(s); }).filter(Boolean);
-    var reveal = function () { cols.forEach(function (c) { c.classList.add("is-in"); }); };
-    if (reduce || !cols.length) { reveal(); html.classList.remove("is-intro"); return; }
+    if (reduce || !cols.length) { cols.forEach(function (c) { c.classList.add("is-in"); }); html.classList.remove("is-intro"); return; }
     var delays = [0, 90, 240];   // reel + feature first, the identity column (wordmark) last
-    setTimeout(function () {     // a brief blank-ground hold, then stagger in
-      cols.forEach(function (c, i) { setTimeout(function () { c.classList.add("is-in"); }, delays[i] || 0); });
-    }, 90);
-    setTimeout(function () { html.classList.remove("is-intro"); }, 90 + 240 + 1050);   // release once the last column has settled
+    cols.forEach(function (c, i) { setTimeout(function () { c.classList.add("is-in"); }, delays[i] || 0); });
+    setTimeout(function () { html.classList.remove("is-intro"); }, 240 + 1050);   // release once the last column has settled
+  }
+
+  /* ---- the opening titles: a Bolex threading film over a feet counter, then the
+          wordmark, then a dissolve that hands off to the column reveal underneath ---- */
+  function initLoader(onReveal) {
+    var el = document.getElementById("loader");
+    if (!el) { onReveal(); return; }
+
+    var done = false;
+    var finish = function () {
+      if (done) return; done = true;
+      onReveal();                                   // start the columns fading in underneath
+      el.classList.add("is-done");                  // then dissolve the burgundy overlay over them
+      var remove = function () { if (el.parentNode) el.parentNode.removeChild(el); };
+      el.addEventListener("transitionend", remove, { once: true });
+      setTimeout(remove, 1300);                     // belt-and-braces in case transitionend never fires
+    };
+    el.addEventListener("click", finish);           // click anywhere to skip the intro
+
+    if (reduce) { finish(); return; }               // reduced motion → straight to the site
+
+    /* the feet counter winds 0 → 100ft (the camera's reels + film loop run via CSS) */
+    var num = el.querySelector("[data-load-ft]");
+    var fill = el.querySelector("[data-load-fill]");
+    var DUR = 2050, t0 = null;
+    var pad = function (n) { return ("00" + n).slice(-3); };
+    var tick = function (ts) {
+      if (t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / DUR);
+      var e = 1 - Math.pow(1 - p, 2.2);             // ease toward 100
+      if (num) num.textContent = pad(Math.round(e * 100));
+      if (fill) fill.style.transform = "scaleX(" + e.toFixed(4) + ")";
+      if (p < 1 && !done) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+
+    setTimeout(function () { if (!done) el.classList.add("is-named"); }, 2250);   // spool down → resolve the wordmark
+    setTimeout(finish, 3750);                                                     // → dissolve into the site
   }
 
   /* ---- scroll the identity column → it expands over the feature, then contracts (studio-simms) ---- */
@@ -322,7 +356,8 @@
 
   function boot() {
     if (!hasGSAP) document.body.classList.add("no-anim");
-    initIntro(); initSplit(); initYear(); initReveals(); initFilms(); initReelScroll(); initProgress(); initMagnetic(); initCursor(); initExpand(); initRecord();
+    initSplit(); initYear(); initReveals(); initFilms(); initReelScroll(); initProgress(); initMagnetic(); initCursor(); initExpand(); initRecord();
+    initLoader(revealColumns);   // plays the opening titles, then hands off to the column reveal
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

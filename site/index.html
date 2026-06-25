@@ -32,8 +32,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/home.css?v=32" />
-  <script>(function(h){try{h.classList.add('is-intro');setTimeout(function(){h.classList.remove('is-intro');},2600);}catch(e){}})(document.documentElement);</script>
+  <link rel="stylesheet" href="assets/css/home.css?v=36" />
+  <script>(function(d){var h=d.documentElement;try{h.classList.add('is-intro');
+    setTimeout(function(){h.classList.remove('is-intro');},7000);                                  /* backstop: never trap the columns hidden */
+    setTimeout(function(){var l=d.getElementById('loader');if(l){l.classList.add('is-done');setTimeout(function(){if(l.parentNode)l.parentNode.removeChild(l);},950);}},7400);  /* backstop: never trap the overlay */
+  }catch(e){}})(document);</script>
 
   <script type="application/ld+json">
   {
@@ -84,6 +87,56 @@
 </head>
 <body>
   <a class="skip" href="#films">Skip to the films</a>
+
+  <!-- OPENING TITLES — Bolex threads film over a feet counter, then the wordmark, then dissolve -->
+  <div class="loader" id="loader" role="presentation" aria-hidden="true">
+    <div class="loader__stage">
+      <svg class="loader__bolex" viewBox="0 0 300 200" role="img" aria-label="A Bolex film camera threading film">
+        <!-- film threaded off the two spools, down through the gate -->
+        <path class="film-band" d="M96 84 C96 105 124 116 150 116 C176 116 204 99 204 76"/>
+        <path class="film-perf" d="M96 84 C96 105 124 116 150 116 C176 116 204 99 204 76"/>
+
+        <!-- camera body + lens turret + hand crank -->
+        <rect class="ln" x="106" y="106" width="88" height="74" rx="9"/>
+        <path class="ln" d="M194 131 l30 -9 v40 l-30 -9 z"/>
+        <circle class="ln" cx="214" cy="142" r="9"/>
+        <circle class="ln ln--thin" cx="214" cy="142" r="4"/>
+        <circle class="ln" cx="106" cy="150" r="8"/>
+        <path class="ln" d="M106 150 l-10 6"/>
+        <rect class="ln ln--thin" x="120" y="166" width="60" height="0"/>
+
+        <!-- left spool (feed) -->
+        <g class="reel reel--a">
+          <circle class="ln" cx="96" cy="56" r="30"/>
+          <circle class="ln ln--thin" cx="96" cy="56" r="16"/>
+          <circle class="fillc" cx="96" cy="56" r="5"/>
+          <circle class="ln ln--thin" cx="96" cy="37" r="3.4"/>
+          <circle class="ln ln--thin" cx="113" cy="65" r="3.4"/>
+          <circle class="ln ln--thin" cx="79" cy="65" r="3.4"/>
+        </g>
+        <!-- right spool (take-up) -->
+        <g class="reel reel--b">
+          <circle class="ln" cx="204" cy="56" r="24"/>
+          <circle class="ln ln--thin" cx="204" cy="56" r="12.5"/>
+          <circle class="fillc" cx="204" cy="56" r="4.5"/>
+          <circle class="ln ln--thin" cx="204" cy="41" r="3"/>
+          <circle class="ln ln--thin" cx="217" cy="64" r="3"/>
+          <circle class="ln ln--thin" cx="191" cy="64" r="3"/>
+        </g>
+      </svg>
+
+      <div class="loader__counter">
+        <span class="loader__ft"><span data-load-ft>000</span><span class="loader__unit">ft</span></span>
+        <span class="loader__track"><i data-load-fill></i></span>
+      </div>
+    </div>
+
+    <div class="loader__name">
+      <img class="loader__namelogo" src="assets/img/logo-sanvir-chana.png" alt="Sanvir Chana" />
+      <span class="loader__rule"></span>
+      <span class="loader__tag">Weddings by Sanvir</span>
+    </div>
+  </div>
 
   <div class="layout">
 
@@ -251,6 +304,6 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="assets/js/home.js?v=10" defer></script>
+  <script src="assets/js/home.js?v=11" defer></script>
 </body>
 </html>
